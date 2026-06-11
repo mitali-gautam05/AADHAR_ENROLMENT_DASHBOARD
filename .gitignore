@@ -1,0 +1,30 @@
+# ── Large data files ──────────────────────────────────────
+data/*.csv
+data/*.zip
+
+# ── Virtual environment ───────────────────────────────────
+venv/
+env/
+.env
+
+# ── VS Code settings ──────────────────────────────────────
+.vscode/
+
+# ── Python cache ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ── Jupyter / Colab ───────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ── OS junk ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Streamlit ─────────────────────────────────────────────
+.streamlit/secrets.toml
