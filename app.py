@@ -19,31 +19,18 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # ── Page config ───────────────────────────────────────────────────────────────
-st.set_page_config(
-    page_title="Aadhaar Enrolment Dashboard",
-    page_icon="🇮🇳",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
-# ── CSS ───────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
+    /* Main background */
     .stApp { background-color: #f8fafc; }
 
+    /* Sidebar */
     [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #1a1f36 0%, #2d3561 100%);
     }
-    [data-testid="stSidebar"] .stMarkdown,
-    [data-testid="stSidebar"] .stSelectbox label,
-    [data-testid="stSidebar"] .stMultiSelect label,
-    [data-testid="stSidebar"] .stSlider label,
-    [data-testid="stSidebar"] .stCheckbox label,
-    [data-testid="stSidebar"] p,
-    [data-testid="stSidebar"] span {
-        color: #e2e8f0 !important;
-    }
+    [data-testid="stSidebar"] * { color: #e2e8f0 !important; }
 
+    /* Metric cards */
     [data-testid="stMetric"] {
         background: white;
         padding: 16px 20px;
@@ -51,12 +38,16 @@ st.markdown("""
         border-left: 4px solid #3b82f6;
         box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
-    [data-testid="stMetricLabel"] { color: #64748b !important; }
-    [data-testid="stMetricValue"] { color: #1e293b !important; }
 
-    h2 { color: #1e293b; font-weight: 700; }
+    /* Section headers */
+    h2 { color: #1e293b; font-weight: 700; margin-top: 1.5rem; }
     h3 { color: #334155; font-weight: 600; }
-    p  { color: #1e293b; }
+
+    /* Tab styling */
+    .stTabs [data-baseweb="tab"] {
+        font-weight: 600;
+        font-size: 14px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -159,7 +150,6 @@ show_5_17 = st.sidebar.checkbox("5–17 years", value=True)
 show_18   = st.sidebar.checkbox("18+ years",  value=True)
 
 st.sidebar.markdown("---")
-st.sidebar.caption("Built by Mitali Gupta | MITS Gwalior")
 st.sidebar.caption("Data: UIDAI Enrolment Mar–Oct 2025")
 
 # ── Apply filters ─────────────────────────────────────────────────────────────
