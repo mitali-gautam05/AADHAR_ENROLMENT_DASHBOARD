@@ -2,13 +2,6 @@
 
 An end-to-end data analytics project built on ~1M UIDAI Aadhaar enrolment records (March–October 2025). Covers data cleaning, exploratory analysis, geospatial mapping, time-series trend analysis, and a live interactive Streamlit dashboard.
 
----
-
-## 🔗 Live Demo
-
-> **[Add Streamlit Cloud URL here after deployment]**
-
----
 
 ## 📸 Dashboard Preview
 
