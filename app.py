@@ -1,5 +1,3 @@
-# app.py — Aadhaar Enrolment Intelligence Dashboard
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -19,15 +17,19 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* ── Hide Streamlit default top bar & footer ── */
-#MainMenu, footer, header { visibility: hidden; }
+/* ── REMOVE header/footer hide — that was killing the sidebar toggle ── */
+/* DO NOT hide header — sidebar toggle button lives there              */
+footer { visibility: hidden; }
 
-/* ── Force white background everywhere ── */
-html, body, [data-testid="stAppViewContainer"],
+/* ── White background ── */
+html, body,
+[data-testid="stAppViewContainer"],
 [data-testid="stAppViewBlockContainer"],
-.main, .block-container { background-color: #ffffff !important; }
+.main, .block-container {
+    background-color: #ffffff !important;
+}
 
-/* ── ALL text in main area: force dark ── */
+/* ── Main area text: dark ── */
 .main h1 { color: #0c1a2e !important; font-size: 2rem !important; font-weight: 800 !important; }
 .main h2 { color: #0c1a2e !important; font-weight: 700 !important; }
 .main h3 { color: #0c1a2e !important; font-weight: 700 !important; padding-bottom: 6px; border-bottom: 3px solid #f59e0b; margin-bottom: 14px; }
@@ -55,7 +57,7 @@ html, body, [data-testid="stAppViewContainer"],
     padding: 10px !important;
 }
 
-/* ── Info / warning / alert boxes ── */
+/* ── Info / alert boxes ── */
 [data-testid="stAlert"] p { color: #1e293b !important; font-weight: 500 !important; }
 div[data-baseweb="notification"] p { color: #1e293b !important; }
 
@@ -66,74 +68,76 @@ div[data-baseweb="notification"] p { color: #1e293b !important; }
 .stTabs [aria-selected="true"] { background: #ffffff !important; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
 .stTabs [aria-selected="true"] p { color: #b45309 !important; font-weight: 700 !important; }
 
-/* ── Caption text ── */
+/* ── Caption ── */
 .stCaption p, [data-testid="stCaptionContainer"] p { color: #64748b !important; font-size: 12px !important; }
 
-/* ── Horizontal rule ── */
+/* ── HR ── */
 hr { border-color: #fde68a !important; opacity: 0.7; }
 
-/* ── Selectbox / dropdown labels ── */
+/* ── Selectbox labels in main ── */
 .main .stSelectbox label p { color: #1e293b !important; font-weight: 600 !important; }
 
 /* ── Dataframe ── */
 [data-testid="stDataFrame"] { border-radius: 10px; border: 1px solid #e2e8f0; }
 
-/* ── SIDEBAR: dark navy — scoped tightly so it never bleeds into main ── */
+/* ══════════════════════════════════════════════════════
+   SIDEBAR — dark navy, all text light
+   These selectors cover every Streamlit sidebar element
+   ══════════════════════════════════════════════════════ */
 [data-testid="stSidebar"] {
     background: linear-gradient(180deg, #0f172a 0%, #1e3a5f 100%) !important;
-    display: block !important;
     visibility: visible !important;
+    display: flex !important;
+}
+section[data-testid="stSidebar"] > div {
+    background: transparent !important;
 }
 
-/* Force sidebar visible even when header { visibility: hidden } bleeds */
-[data-testid="stSidebar"],
-[data-testid="stSidebarNav"],
-[data-testid="stSidebarContent"] {
-    visibility: visible !important;
-    display: block !important;
-}
-
-/* Sidebar text — explicitly listed, NOT using wildcard * */
+/* Every text node inside sidebar → light colour */
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
 [data-testid="stSidebar"] h3,
 [data-testid="stSidebar"] h4,
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] span,
+[data-testid="stSidebar"] li,
 [data-testid="stSidebar"] label,
 [data-testid="stSidebar"] small,
-[data-testid="stSidebar"] .stMarkdown p,
-[data-testid="stSidebar"] .stMarkdown li,
-[data-testid="stSidebar"] .stMarkdown span,
-[data-testid="stSidebar"] .stCheckbox label span,
-[data-testid="stSidebar"] .stMultiSelect label p,
-[data-testid="stSidebar"] .stSelectbox label p,
-[data-testid="stSidebar"] .stSlider label p,
-[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p,
-[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
-[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] li { 
-    color: #e2e8f0 !important; 
+[data-testid="stSidebar"] div,
+[data-testid="stSidebar"] strong,
+[data-testid="stSidebar"] em {
+    color: #e2e8f0 !important;
 }
 
-/* Sidebar metric values if any */
-[data-testid="stSidebar"] [data-testid="stMetricLabel"] p,
-[data-testid="stSidebar"] [data-testid="stMetricValue"] { 
-    color: #e2e8f0 !important; 
-}
-
-/* Sidebar multiselect tags */
+/* Sidebar multiselect pill text stays dark (pill bg is light) */
 [data-testid="stSidebar"] [data-baseweb="tag"] span { color: #0f172a !important; }
 
-/* Sidebar select slider values */
-[data-testid="stSidebar"] [data-testid="stSlider"] p,
-[data-testid="stSidebar"] [data-testid="stSlider"] span { color: #e2e8f0 !important; }
+/* Sidebar separator */
+[data-testid="stSidebar"] hr { border-color: #334155 !important; opacity: 1; }
 
-/* Sidebar checkbox text */
-[data-testid="stSidebar"] [data-testid="stCheckbox"] p,
-[data-testid="stSidebar"] [data-testid="stCheckbox"] span { color: #e2e8f0 !important; }
+/* Sidebar metric (if any) */
+[data-testid="stSidebar"] [data-testid="stMetric"] {
+    background: rgba(255,255,255,0.08) !important;
+    border-left-color: #f59e0b !important;
+}
+[data-testid="stSidebar"] [data-testid="stMetricLabel"] p,
+[data-testid="stSidebar"] [data-testid="stMetricValue"] { color: #e2e8f0 !important; }
 
-/* Sidebar separator line */
-[data-testid="stSidebar"] hr { border-color: #334155 !important; }
+/* Sidebar collapse/expand button area — keep visible */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarCollapseButton"],
+button[data-testid="baseButton-headerNoPadding"] {
+    visibility: visible !important;
+    display: flex !important;
+    color: #e2e8f0 !important;
+}
+
+/* Header bar: keep visible (needed for sidebar toggle) but style cleanly */
+header[data-testid="stHeader"] {
+    background: rgba(255,255,255,0.95) !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    visibility: visible !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -170,21 +174,16 @@ def show_png(filename, caption=""):
 def chart_layout(fig, height=420):
     fig.update_layout(
         height=height,
-        plot_bgcolor="white",
-        paper_bgcolor="white",
+        plot_bgcolor="white", paper_bgcolor="white",
         font=dict(family="Inter, Arial, sans-serif", size=13, color="#1e293b"),
         title_font=dict(size=16, color="#0c1a2e", family="Inter, Arial, sans-serif"),
         legend=dict(font=dict(size=12, color="#1e293b")),
-        xaxis=dict(
-            tickfont=dict(size=12, color="#1e293b"),
-            title_font=dict(size=13, color="#1e293b"),
-            showgrid=True, gridcolor="#f1f5f9",
-        ),
-        yaxis=dict(
-            tickfont=dict(size=12, color="#1e293b"),
-            title_font=dict(size=13, color="#1e293b"),
-            showgrid=True, gridcolor="#f1f5f9",
-        ),
+        xaxis=dict(tickfont=dict(size=12, color="#1e293b"),
+                   title_font=dict(size=13, color="#1e293b"),
+                   showgrid=True, gridcolor="#f1f5f9"),
+        yaxis=dict(tickfont=dict(size=12, color="#1e293b"),
+                   title_font=dict(size=13, color="#1e293b"),
+                   showgrid=True, gridcolor="#f1f5f9"),
         margin=dict(l=50, r=30, t=50, b=50),
     )
     return fig
