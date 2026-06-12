@@ -46,7 +46,7 @@ html, body, [data-testid="stAppViewContainer"],
 [data-testid="stMetricLabel"] p { color: #92400e !important; font-weight: 700 !important; font-size: 13px !important; }
 [data-testid="stMetricValue"]   { color: #0c1a2e !important; font-weight: 800 !important; }
 
-/* ── PNG/image wrapper: butter yellow background ── */
+/* ── PNG/image wrapper ── */
 [data-testid="stImage"] img { border-radius: 8px; }
 [data-testid="stImage"] {
     background: #fffbeb !important;
@@ -75,25 +75,65 @@ hr { border-color: #fde68a !important; opacity: 0.7; }
 /* ── Selectbox / dropdown labels ── */
 .main .stSelectbox label p { color: #1e293b !important; font-weight: 600 !important; }
 
-/* ── SIDEBAR: dark navy ── */
+/* ── Dataframe ── */
+[data-testid="stDataFrame"] { border-radius: 10px; border: 1px solid #e2e8f0; }
+
+/* ── SIDEBAR: dark navy — scoped tightly so it never bleeds into main ── */
 [data-testid="stSidebar"] {
     background: linear-gradient(180deg, #0f172a 0%, #1e3a5f 100%) !important;
+    display: block !important;
+    visibility: visible !important;
 }
+
+/* Force sidebar visible even when header { visibility: hidden } bleeds */
+[data-testid="stSidebar"],
+[data-testid="stSidebarNav"],
+[data-testid="stSidebarContent"] {
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Sidebar text — explicitly listed, NOT using wildcard * */
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
 [data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] h4,
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] span,
 [data-testid="stSidebar"] label,
+[data-testid="stSidebar"] small,
 [data-testid="stSidebar"] .stMarkdown p,
+[data-testid="stSidebar"] .stMarkdown li,
+[data-testid="stSidebar"] .stMarkdown span,
 [data-testid="stSidebar"] .stCheckbox label span,
-[data-testid="stSidebar"] .stMultiSelect label,
-[data-testid="stSidebar"] .stSelectbox label,
-[data-testid="stSidebar"] .stSlider label,
-[data-testid="stSidebar"] small { color: #e2e8f0 !important; }
+[data-testid="stSidebar"] .stMultiSelect label p,
+[data-testid="stSidebar"] .stSelectbox label p,
+[data-testid="stSidebar"] .stSlider label p,
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p,
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] li { 
+    color: #e2e8f0 !important; 
+}
 
-/* ── Dataframe ── */
-[data-testid="stDataFrame"] { border-radius: 10px; border: 1px solid #e2e8f0; }
+/* Sidebar metric values if any */
+[data-testid="stSidebar"] [data-testid="stMetricLabel"] p,
+[data-testid="stSidebar"] [data-testid="stMetricValue"] { 
+    color: #e2e8f0 !important; 
+}
+
+/* Sidebar multiselect tags */
+[data-testid="stSidebar"] [data-baseweb="tag"] span { color: #0f172a !important; }
+
+/* Sidebar select slider values */
+[data-testid="stSidebar"] [data-testid="stSlider"] p,
+[data-testid="stSidebar"] [data-testid="stSlider"] span { color: #e2e8f0 !important; }
+
+/* Sidebar checkbox text */
+[data-testid="stSidebar"] [data-testid="stCheckbox"] p,
+[data-testid="stSidebar"] [data-testid="stCheckbox"] span { color: #e2e8f0 !important; }
+
+/* Sidebar separator line */
+[data-testid="stSidebar"] hr { border-color: #334155 !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -128,7 +168,6 @@ def show_png(filename, caption=""):
         st.warning(f"Image not found: `{filename}`")
 
 def chart_layout(fig, height=420):
-    """Apply consistent readable styling to every Plotly chart."""
     fig.update_layout(
         height=height,
         plot_bgcolor="white",
