@@ -138,6 +138,26 @@ header[data-testid="stHeader"] {
     border-bottom: 1px solid #f1f5f9 !important;
     visibility: visible !important;
 }
+            /* Force sidebar toggle visible */
+button[kind="header"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Toggle icon */
+[data-testid="stIconMaterial"] {
+    color: #000000 !important;  /* black */
+    opacity: 1 !important;
+    font-size: 28px !important;
+}
+
+/* Header */
+header[data-testid="stHeader"] {
+    height: 60px !important;
+    visibility: visible !important;
+    display: block !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
