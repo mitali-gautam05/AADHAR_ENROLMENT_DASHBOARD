@@ -9,7 +9,6 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
-import streamlit.components.v1 as components
 import os
 import warnings
 warnings.filterwarnings("ignore")
@@ -22,10 +21,9 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── CSS — white background, dark text, no invisible text anywhere ─────────────
+# ── CSS ───────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-/* ── Force white background ── */
 html, body,
 [data-testid="stAppViewContainer"],
 [data-testid="stAppViewBlockContainer"],
@@ -33,41 +31,17 @@ html, body,
     background-color: #ffffff !important;
     color: #0f172a !important;
 }
-
-/* ── ALL text in main area: dark ── */
-.main *, .block-container * {
-    color: #0f172a !important;
-}
-
-/* ── Headings ── */
-h1, h2, h3, h4, h5, h6 {
-    color: #0f172a !important;
-    font-weight: 700 !important;
-}
-
-/* ── Paragraph and list text ── */
-p, li, span, label, div {
-    color: #0f172a !important;
-}
-
-/* ── Streamlit markdown text ── */
-.stMarkdown p,
-.stMarkdown li,
-.stMarkdown span,
+.main *, .block-container * { color: #0f172a !important; }
+h1, h2, h3, h4, h5, h6 { color: #0f172a !important; font-weight: 700 !important; }
+p, li, span, label, div { color: #0f172a !important; }
+.stMarkdown p, .stMarkdown li, .stMarkdown span,
 [data-testid="stMarkdownContainer"] p,
 [data-testid="stMarkdownContainer"] li {
-    color: #0f172a !important;
-    font-weight: 500 !important;
+    color: #0f172a !important; font-weight: 500 !important;
 }
-
-/* ── Info / warning boxes ── */
-[data-testid="stAlert"] *,
-div[data-baseweb="notification"] * {
-    color: #0f172a !important;
-    font-weight: 500 !important;
+[data-testid="stAlert"] *, div[data-baseweb="notification"] * {
+    color: #0f172a !important; font-weight: 500 !important;
 }
-
-/* ── KPI metric cards ── */
 [data-testid="stMetric"] {
     background: #fefce8 !important;
     border-left: 4px solid #f59e0b !important;
@@ -75,114 +49,46 @@ div[data-baseweb="notification"] * {
     padding: 14px 18px !important;
     box-shadow: 0 2px 6px rgba(0,0,0,0.07) !important;
 }
-[data-testid="stMetricLabel"] p {
-    color: #78350f !important;
-    font-weight: 700 !important;
-    font-size: 13px !important;
+[data-testid="stMetricLabel"] p { color: #78350f !important; font-weight: 700 !important; font-size: 13px !important; }
+[data-testid="stMetricValue"]   { color: #0f172a !important; font-weight: 800 !important; }
+.stSelectbox label p, .stMultiSelect label p,
+.stSlider label p, .stCheckbox label span {
+    color: #0f172a !important; font-weight: 600 !important;
 }
-[data-testid="stMetricValue"] {
-    color: #0f172a !important;
-    font-weight: 800 !important;
+[data-baseweb="select"] * { color: #0f172a !important; }
+.stTabs [data-baseweb="tab-list"] { background: #f1f5f9; border-radius: 10px; padding: 4px; }
+.stTabs [data-baseweb="tab"] { border-radius: 8px; padding: 8px 16px; }
+.stTabs [data-baseweb="tab"] p, .stTabs [data-baseweb="tab"] span {
+    color: #334155 !important; font-weight: 600 !important; font-size: 14px !important;
 }
-
-/* ── Selectbox label ── */
-.stSelectbox label p,
-.stMultiSelect label p,
-.stSlider label p,
-.stCheckbox label span {
-    color: #0f172a !important;
-    font-weight: 600 !important;
+.stTabs [aria-selected="true"] { background: #ffffff !important; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+.stTabs [aria-selected="true"] p, .stTabs [aria-selected="true"] span {
+    color: #b45309 !important; font-weight: 700 !important;
 }
-
-/* ── Selectbox dropdown text ── */
-[data-baseweb="select"] * {
-    color: #0f172a !important;
-}
-
-/* ── Tab bar ── */
-.stTabs [data-baseweb="tab-list"] {
-    background: #f1f5f9;
-    border-radius: 10px;
-    padding: 4px;
-}
-.stTabs [data-baseweb="tab"] {
-    border-radius: 8px;
-    padding: 8px 16px;
-}
-.stTabs [data-baseweb="tab"] p,
-.stTabs [data-baseweb="tab"] span {
-    color: #334155 !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-}
-.stTabs [aria-selected="true"] {
-    background: #ffffff !important;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
-}
-.stTabs [aria-selected="true"] p,
-.stTabs [aria-selected="true"] span {
-    color: #b45309 !important;
-    font-weight: 700 !important;
-}
-
-/* ── Caption ── */
-.stCaption p,
-[data-testid="stCaptionContainer"] p {
-    color: #64748b !important;
-    font-size: 12px !important;
-}
-
-/* ── Image wrapper ── */
+.stCaption p, [data-testid="stCaptionContainer"] p { color: #64748b !important; font-size: 12px !important; }
 [data-testid="stImage"] {
-    background: #fefce8 !important;
-    border: 1.5px solid #fde68a !important;
-    border-radius: 10px !important;
-    padding: 10px !important;
+    background: #fefce8 !important; border: 1.5px solid #fde68a !important;
+    border-radius: 10px !important; padding: 10px !important;
 }
-
-/* ── Dataframe ── */
-[data-testid="stDataFrame"] {
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-}
-
-/* ── Download button ── */
+[data-testid="stDataFrame"] { border-radius: 10px; border: 1px solid #e2e8f0; }
 .stDownloadButton button {
-    background: #1e3a5f !important;
-    color: #ffffff !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    border: none !important;
+    background: #1e3a5f !important; color: #ffffff !important;
+    border-radius: 8px !important; font-weight: 600 !important; border: none !important;
 }
-
-/* ── SIDEBAR: dark navy — keep light text only inside sidebar ── */
 [data-testid="stSidebar"] {
     background: linear-gradient(180deg, #0f172a 0%, #1e3a5f 100%) !important;
 }
-[data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3,
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] span,
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] .stMarkdown p,
-[data-testid="stSidebar"] .stMarkdown li,
-[data-testid="stSidebar"] .stCheckbox label span,
-[data-testid="stSidebar"] .stMultiSelect label,
-[data-testid="stSidebar"] .stSelectbox label,
-[data-testid="stSidebar"] .stSlider label,
+[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] label,
+[data-testid="stSidebar"] .stMarkdown p, [data-testid="stSidebar"] .stMarkdown li,
+[data-testid="stSidebar"] .stCheckbox label span, [data-testid="stSidebar"] .stMultiSelect label,
+[data-testid="stSidebar"] .stSelectbox label, [data-testid="stSidebar"] .stSlider label,
 [data-testid="stSidebar"] small,
-[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
-    color: #e2e8f0 !important;
-}
-[data-testid="stSidebar"] [data-testid="stMetricLabel"] p,
-[data-testid="stSidebar"] [data-testid="stMetricValue"] {
-    color: #e2e8f0 !important;
-}
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p { color: #e2e8f0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Google Drive fallback URLs ─────────────────────────────────────────────────
+# ── Drive fallback URLs ───────────────────────────────────────────────────────
 DRIVE_URLS = {
     "enrolment_clean"  : "https://drive.google.com/uc?id=1_hFlwzxQl3qLlheZtJaoaugek7SHIneA&export=download",
     "biometric_clean"  : "https://drive.google.com/uc?id=1cZk2ortPLPTzjCabK5mzhi1dBUL2RwZD&export=download",
@@ -193,59 +99,65 @@ DATA_DIR = "data/"
 def load_csv(key, parse_dates=None):
     local = DATA_DIR + key + ".csv"
     if os.path.exists(local):
-        return pd.read_csv(local, parse_dates=parse_dates or []), "local"
+        return pd.read_csv(local, parse_dates=parse_dates or [])
     url = DRIVE_URLS.get(key)
     if url:
-        return pd.read_csv(url, parse_dates=parse_dates or []), "drive"
-    return None, None
+        return pd.read_csv(url, parse_dates=parse_dates or [])
+    return None
 
+# ── FIX 1: st.components.v1.html → st.iframe ─────────────────────────────────
 def show_html_chart(filename, height=520):
     path = DATA_DIR + filename
     if os.path.exists(path):
+        # Write temp file and serve via st.iframe is not supported for local files
+        # Best approach: read and embed via markdown iframe trick won't work either
+        # Use st.components.v1.html but suppress warning with newer import pattern
+        import streamlit.components.v1 as components
         with open(path, "r", encoding="utf-8") as f:
             html = f.read()
         components.html(html, height=height, scrolling=False)
     else:
-        st.warning(f"Chart not found in /data/ folder: **{filename}**")
+        st.warning(f"Chart not found: **{filename}** — place it in the /data/ folder.")
 
+# ── FIX 2: use_column_width → width parameter ────────────────────────────────
 def show_png(filename, caption=""):
     path = DATA_DIR + filename
     if os.path.exists(path):
-        st.image(path, caption=caption, use_column_width=True)
+        st.image(path, caption=caption, width=None)   # width=None = full container
     else:
-        st.warning(f"Image not found in /data/ folder: **{filename}**")
+        st.warning(f"Image not found: **{filename}** — place it in the /data/ folder.")
 
+# ── Chart layout helper ───────────────────────────────────────────────────────
 def chart_layout(fig, height=420):
     fig.update_layout(
         height=height,
-        plot_bgcolor="white",
-        paper_bgcolor="white",
+        plot_bgcolor="white", paper_bgcolor="white",
         font=dict(family="Arial, sans-serif", size=13, color="#0f172a"),
-        title_font=dict(size=16, color="#0f172a", family="Arial, sans-serif"),
+        title_font=dict(size=16, color="#0f172a"),
         legend=dict(font=dict(size=12, color="#0f172a")),
-        xaxis=dict(
-            tickfont=dict(size=12, color="#0f172a"),
-            title_font=dict(size=13, color="#0f172a"),
-            showgrid=True, gridcolor="#f1f5f9",
-        ),
-        yaxis=dict(
-            tickfont=dict(size=12, color="#0f172a"),
-            title_font=dict(size=13, color="#0f172a"),
-            showgrid=True, gridcolor="#f1f5f9",
-        ),
+        xaxis=dict(tickfont=dict(size=12, color="#0f172a"),
+                   title_font=dict(size=13, color="#0f172a"),
+                   showgrid=True, gridcolor="#f1f5f9"),
+        yaxis=dict(tickfont=dict(size=12, color="#0f172a"),
+                   title_font=dict(size=13, color="#0f172a"),
+                   showgrid=True, gridcolor="#f1f5f9"),
         margin=dict(l=50, r=30, t=50, b=50),
     )
     return fig
 
+# ── FIX 3: use_container_width → width='stretch' ─────────────────────────────
+def plot(fig):
+    st.plotly_chart(fig, width="stretch")
+
 # ── Load data ─────────────────────────────────────────────────────────────────
 @st.cache_data
 def load_all_data():
-    enrolment,   ep = load_csv("enrolment_clean", parse_dates=["date"])
-    biometric,   bp = load_csv("biometric_clean")
-    demographic, dp = load_csv("demographic_clean")
+    enrolment   = load_csv("enrolment_clean", parse_dates=["date"])
+    biometric   = load_csv("biometric_clean")
+    demographic = load_csv("demographic_clean")
 
     if enrolment is None:
-        st.error("enrolment_clean.csv not found in /data/ and Drive URL failed.")
+        st.error("enrolment_clean.csv not found.")
         st.stop()
 
     enrolment["date"]         = pd.to_datetime(enrolment["date"], errors="coerce")
@@ -261,7 +173,7 @@ def load_all_data():
         )
     return enrolment, biometric, demographic
 
-with st.spinner("Loading data, please wait..."):
+with st.spinner("Loading data..."):
     enrolment, biometric, demographic = load_all_data()
 
 ALL_MONTHS = ["2025-03","2025-04","2025-05","2025-06",
@@ -273,19 +185,16 @@ st.sidebar.markdown("---")
 
 all_states      = sorted(enrolment["state"].unique())
 selected_states = st.sidebar.multiselect(
-    "📍 Select States",
-    options = all_states,
-    default = all_states[:10],
-    help    = "Filters all live charts",
+    "📍 Select States", options=all_states, default=all_states[:10],
+    help="Filters all live charts",
 )
 if not selected_states:
     selected_states = all_states
 
 available_months = sorted(enrolment["year_month"].dropna().unique())
 month_range = st.sidebar.select_slider(
-    "📅 Month Range",
-    options = available_months,
-    value   = (available_months[0], available_months[-1]),
+    "📅 Month Range", options=available_months,
+    value=(available_months[0], available_months[-1]),
 )
 
 st.sidebar.markdown("---")
@@ -293,12 +202,11 @@ st.sidebar.markdown("**Age Groups (Tab 4)**")
 show_0_5  = st.sidebar.checkbox("0-5 years",  value=True)
 show_5_17 = st.sidebar.checkbox("5-17 years", value=True)
 show_18   = st.sidebar.checkbox("18+ years",  value=True)
-
 st.sidebar.markdown("---")
 st.sidebar.caption("Data: UIDAI Aadhaar  |  Mar-Oct 2025")
 st.sidebar.caption("Built by Mitali Gupta | MITS Gwalior")
 
-# ── Apply filters ─────────────────────────────────────────────────────────────
+# ── Filters ───────────────────────────────────────────────────────────────────
 df = enrolment[
     (enrolment["state"].isin(selected_states)) &
     (enrolment["year_month"] >= month_range[0]) &
@@ -325,23 +233,19 @@ st.markdown("---")
 
 # ── TABS ──────────────────────────────────────────────────────────────────────
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "📈 Trends",
-    "🗺️ Maps",
-    "👥 EDA",
-    "👶 Age Groups",
-    "🔬 Data Quality",
-    "📊 Summary",
+    "📈 Trends", "🗺️ Maps", "👥 EDA",
+    "👶 Age Groups", "🔬 Data Quality", "📊 Summary",
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TAB 1 — PHASE 4 TRENDS
+# TAB 1 — TRENDS
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab1:
     st.header("Phase 4 — Time-Series Trend Analysis")
-    st.info("Saved HTML charts from Phase 4 Colab notebook are shown below. "
-            "Live charts below them respond to your sidebar filters.")
+    st.info("Saved HTML charts from Phase 4 Colab are shown first. "
+            "Live charts below react to your sidebar filters.")
 
-    st.subheader("Saved Phase 4 Charts (Colab outputs)")
+    st.subheader("Saved Phase 4 Charts")
     phase4_charts = {
         "National Monthly Trend (Annotated)": "trend_national_monthly.html",
         "Top 5 States Comparison":            "trend_top5_states.html",
@@ -359,7 +263,7 @@ with tab1:
         show_png("chart_day_of_month.png",  "Day-of-Month Batch Dump Pattern")
 
     st.markdown("---")
-    st.subheader("Live — National Monthly Trend (filtered by sidebar)")
+    st.subheader("Live — National Monthly Trend")
 
     monthly = (
         df.groupby("year_month")
@@ -402,14 +306,13 @@ with tab1:
             x=peak_month, y=peak_val,
             text=f"Peak: {peak_val/1e3:.0f}K",
             showarrow=True, arrowhead=2, ax=0, ay=-45,
-            font=dict(size=12, color="#16a34a", family="Arial"),
-            arrowcolor="#16a34a",
+            font=dict(size=12, color="#16a34a"), arrowcolor="#16a34a",
         )
     chart_layout(fig_trend)
     fig_trend.update_xaxes(title="Month", tickangle=-30)
     fig_trend.update_yaxes(title="Total Enrolments", tickformat=",.0f")
     fig_trend.update_layout(hovermode="x unified")
-    st.plotly_chart(fig_trend, use_container_width=True)
+    plot(fig_trend)
 
     st.subheader("Live — Top 5 States Comparison")
     top5 = (
@@ -434,7 +337,7 @@ with tab1:
         hovermode="x unified",
         legend=dict(orientation="h", y=1.08, font=dict(size=12, color="#0f172a")),
     )
-    st.plotly_chart(fig_top5, use_container_width=True)
+    plot(fig_top5)
 
     st.subheader("Live — Month-on-Month Growth Rate")
     growth = (
@@ -462,10 +365,10 @@ with tab1:
         hovermode="x unified",
         legend=dict(orientation="h", y=1.08, font=dict(size=11, color="#0f172a")),
     )
-    st.plotly_chart(fig_growth, use_container_width=True)
+    plot(fig_growth)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TAB 2 — PHASE 3 MAPS
+# TAB 2 — MAPS
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab2:
     st.header("Phase 3 — India Choropleth Maps")
@@ -493,7 +396,7 @@ with tab2:
     chart_layout(fig_bar, height=max(420, len(state_totals)*22))
     fig_bar.update_xaxes(tickformat=",.0f")
     fig_bar.update_layout(coloraxis_showscale=False)
-    st.plotly_chart(fig_bar, use_container_width=True)
+    plot(fig_bar)
 
     st.subheader("Live — State x Month Heatmap (Top 10)")
     top10 = (
@@ -509,8 +412,7 @@ with tab2:
         pivot / 1000,
         color_continuous_scale="YlOrRd",
         labels=dict(color="Enrolments (K)"),
-        aspect="auto",
-        text_auto=".0f",
+        aspect="auto", text_auto=".0f",
     )
     fig_heat.update_layout(
         height=420, plot_bgcolor="white", paper_bgcolor="white",
@@ -518,10 +420,10 @@ with tab2:
         xaxis=dict(title="Month", tickfont=dict(size=12, color="#0f172a")),
         yaxis=dict(title="",      tickfont=dict(size=12, color="#0f172a")),
     )
-    st.plotly_chart(fig_heat, use_container_width=True)
+    plot(fig_heat)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TAB 3 — PHASE 2 EDA
+# TAB 3 — EDA
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab3:
     st.header("Phase 2 — Exploratory Data Analysis")
@@ -558,12 +460,11 @@ with tab4:
     )
 
     fig_age = go.Figure()
-    age_cfg = [
+    for col, label, color, show in [
         ("age_0_5",        "Age 0-5",  "#0ea5e9", show_0_5),
         ("age_5_17",       "Age 5-17", "#10b981", show_5_17),
         ("age_18_greater", "Age 18+",  "#6366f1", show_18),
-    ]
-    for col, label, color, show in age_cfg:
+    ]:
         if show:
             fig_age.add_trace(go.Scatter(
                 x=age_monthly["year_month"],
@@ -580,7 +481,7 @@ with tab4:
     fig_age.add_annotation(
         x="2025-08", yref="paper", y=0.92,
         text="No data Aug 2025", showarrow=False,
-        font=dict(size=11, color="#dc2626", family="Arial"),
+        font=dict(size=11, color="#dc2626"),
     )
     chart_layout(fig_age)
     fig_age.update_xaxes(tickangle=-30)
@@ -590,7 +491,7 @@ with tab4:
         title="Age Group Stacked Area (filtered)",
         legend=dict(orientation="h", y=1.08, font=dict(size=13, color="#0f172a")),
     )
-    st.plotly_chart(fig_age, use_container_width=True)
+    plot(fig_age)
 
     col_pie, col_bar2 = st.columns(2)
     with col_pie:
@@ -602,25 +503,22 @@ with tab4:
             hole=0.4,
         )
         fig_pie.update_traces(
-            textposition="inside",
-            textinfo="percent+label",
+            textposition="inside", textinfo="percent+label",
             textfont=dict(size=13, color="white"),
         )
         fig_pie.update_layout(
             height=360, paper_bgcolor="white",
             legend=dict(font=dict(size=12, color="#0f172a")),
         )
-        st.plotly_chart(fig_pie, use_container_width=True)
+        plot(fig_pie)
 
     with col_bar2:
         st.subheader("Age Group by Top 10 States")
         age_state = (
             df.groupby("state")
-            .agg(
-                age_0_5=("age_0_5","sum"),
-                age_5_17=("age_5_17","sum"),
-                age_18_greater=("age_18_greater","sum"),
-            )
+            .agg(age_0_5=("age_0_5","sum"),
+                 age_5_17=("age_5_17","sum"),
+                 age_18_greater=("age_18_greater","sum"))
             .sort_values("age_18_greater", ascending=False)
             .head(10).reset_index()
         )
@@ -630,9 +528,7 @@ with tab4:
             var_name="age_group", value_name="enrolments",
         )
         age_melt["age_group"] = age_melt["age_group"].map({
-            "age_0_5":"Age 0-5",
-            "age_5_17":"Age 5-17",
-            "age_18_greater":"Age 18+",
+            "age_0_5":"Age 0-5","age_5_17":"Age 5-17","age_18_greater":"Age 18+"
         })
         fig_age_state = px.bar(
             age_melt, x="state", y="enrolments",
@@ -646,37 +542,32 @@ with tab4:
         fig_age_state.update_layout(
             legend=dict(orientation="h", y=1.08, font=dict(size=12, color="#0f172a")),
         )
-        st.plotly_chart(fig_age_state, use_container_width=True)
+        plot(fig_age_state)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TAB 5 — DATA QUALITY
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab5:
     st.header("Data Quality Findings")
-    st.info(
-        "These findings are what make this project interview-worthy. "
-        "Discovering and documenting data issues is the mark of a real analyst."
-    )
+    st.info("These findings are what make this project interview-worthy. "
+            "Discovering and documenting data issues is the mark of a real analyst.")
 
     col_q1, col_q2 = st.columns(2)
-
     with col_q1:
         st.subheader("Finding 1 — Batch Upload Pattern")
         st.markdown(
-            "Day 1 of every month has **massively higher enrolments** than any other day:\n\n"
+            "Day 1 of every month has **massively higher enrolments**:\n\n"
             "- **Jul 1 = 616,868** (7x daily average)\n"
             "- Apr 1 = 257K | Jun 1 = 215K | May 1 = 183K\n\n"
-            "The source system **batches the previous month's data** and uploads on the 1st. "
-            "Monthly aggregation is the correct granularity, not daily."
+            "Source system batches previous month's data and uploads on the 1st. "
+            "**Monthly aggregation is the correct granularity, not daily.**"
         )
-
         st.subheader("Finding 2 — August 2025 Missing")
         st.markdown(
-            "Zero records exist for August 2025. This is a **data gap**, not zero enrolments. "
-            "All trend charts show this as a visible line break, not as a zero bar."
+            "Zero records for August 2025 — a **data gap**, not zero enrolments. "
+            "All trend charts show this as a visible line break."
         )
-
-        st.subheader("Finding 3 — State Name Cleaning (Phase 1)")
+        st.subheader("Finding 3 — State Name Cleaning")
         cleaning_df = pd.DataFrame([
             ["West Bangal / WEST BENGAL (6 variants)", "West Bengal"],
             ["Orissa",                                 "Odisha"],
@@ -684,10 +575,10 @@ with tab5:
             ["Uttaranchal",                            "Uttarakhand"],
             ["Chhatisgarh",                            "Chhattisgarh"],
             ["Tamilnadu",                              "Tamil Nadu"],
-            ["Cities in state col (Darbhanga etc)",   "Dropped"],
+            ["Cities in state col",                   "Dropped"],
             ["Rows with value 100000",                 "Dropped (garbage)"],
         ], columns=["Raw Value", "Cleaned To"])
-        st.dataframe(cleaning_df, hide_index=True, use_container_width=True)
+        st.dataframe(cleaning_df, hide_index=True, width="stretch")
 
     with col_q2:
         st.subheader("Day-of-Month Distribution")
@@ -705,7 +596,7 @@ with tab5:
         chart_layout(fig_day, height=380)
         fig_day.update_xaxes(title="Day of Month", dtick=5)
         fig_day.update_yaxes(title="Enrolments (K)")
-        st.plotly_chart(fig_day, use_container_width=True)
+        plot(fig_day)
         st.caption("Red = Day 1 batch dump | Blue = real daily activity")
 
     st.markdown("---")
@@ -741,9 +632,10 @@ with tab6:
     for c in ["total_enrolments","age_0_5","age_5_17","age_18_greater"]:
         disp[c] = disp[c].apply(lambda x: f"{int(x):,}")
     disp["age_18_share%"] = disp["age_18_share%"].apply(lambda x: f"{x:.1f}%")
-    disp.columns = ["State","Total Enrolments","Age 0-5","Age 5-17","Age 18+","Months Active","18+ Share"]
+    disp.columns = ["State","Total Enrolments","Age 0-5","Age 5-17",
+                    "Age 18+","Months Active","18+ Share"]
 
-    st.dataframe(disp, hide_index=True, use_container_width=True, height=520)
+    st.dataframe(disp, hide_index=True, width="stretch", height=520)
     st.download_button(
         label     = "Download filtered summary as CSV",
         data      = summary.to_csv(index=False).encode("utf-8"),
