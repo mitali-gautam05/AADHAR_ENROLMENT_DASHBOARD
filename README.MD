@@ -5,10 +5,10 @@ An end-to-end data analytics project built on ~1M UIDAI Aadhaar enrolment record
 
 ## 📸 Dashboard Preview
 
-![Dashboard](image.png)
-![Trends](image-1.png)
-![Data quality](image-2.png)
-![Data Summary](image-3.png)
+![Dashboard](data/image.png)
+![Trends](data/image-1.png)
+![Data quality](data/image-2.png)
+![Data Summary](data/image-3.png)
 
 ---
 
